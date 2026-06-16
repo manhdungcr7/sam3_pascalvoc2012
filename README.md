@@ -1,4 +1,4 @@
-# SAM3 Fine-tuning on PASCAL VOC 2012
+# SAM3 Improving on PASCAL VOC 2012
 
 **CS331 – Advanced Computer Vision | University of Information Technology (UIT)**
 
