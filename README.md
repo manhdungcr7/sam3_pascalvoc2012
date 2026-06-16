@@ -1,4 +1,4 @@
-# SAM3 Fine-tuning on PASCAL VOC 2012
+# SAM3 Improving on PASCAL VOC 2012
 
 **CS331 – Advanced Computer Vision | University of Information Technology (UIT)**
 
@@ -36,7 +36,7 @@ LoRA achieves 4/4 target classes above SAM3 baseline (no class regresses).
 sam3_pascalvoc2012/
 ├── finetuningsam3.ipynb                  # LoRA fine-tuning pipeline (v19, main training notebook)
 ├── eval.ipynb                            # Evaluation: SAM3 base vs LoRA FT on full val (1449 images)
-├── model_finetune/                       # LoRA adapter weights (adapter_config.json + adapter_model.safetensors)
+├── test_all_onkaggle.ipynb               # SAM3 zero-shot baseline evaluation on VOC2012 val (Kaggle)
 ├── Adjust_SAM3_on_5weakclass_pascalvoc2012-main/
 │   ├── train_unet_aspp_just4.ipynb       # UNet+ASPP OLD training
 │   ├── train_unet_aspp_new_v2.ipynb      # UNet+ASPP v2 training
@@ -114,20 +114,20 @@ Place `sam3.pt` at the project root or update the `SAM3_CKPT` path in the notebo
 
 ## 3. LoRA Adapter Weights
 
-The fine-tuned LoRA adapter is stored in `model_finetune/`:
-
-```
-model_finetune/
-├── adapter_config.json
-└── adapter_model.safetensors
-```
-
-These correspond to training **epoch 14** (best mini-val mIoU = 0.6601).
+The fine-tuned LoRA adapter weights (epoch 14, best mini-val mIoU = 0.6601) are **not included in this repo** due to file size.
 
 Download from Kaggle:
 
 ```
 https://www.kaggle.com/datasets/trungkienksd/sam3-finetune
+```
+
+Expected structure after download:
+
+```
+model_finetune/
+├── adapter_config.json
+└── adapter_model.safetensors
 ```
 
 ---
@@ -188,7 +188,25 @@ Output: per-class IoU table + bar chart.
 
 ---
 
-## 6. UNet+ASPP Methods (Partner's Approach)
+## 6. SAM3 Baseline Evaluation (Zero-shot)
+
+Open `test_all_onkaggle.ipynb` on Kaggle to reproduce the SAM3 zero-shot baseline result.
+
+**Key paths to configure (Cell 5):**
+
+```python
+VOC_ROOT = Path("/kaggle/input/.../VOC2012")
+```
+
+The notebook evaluates native SAM3 (no fine-tuning) on all 1449 val images using raw class-name text prompts for all 20 VOC classes. Score-based conflict resolution is applied when multiple classes overlap on the same pixel.
+
+Output: per-class IoU table + bar chart + per-class visualization (Original | GT | Prediction | Error Overlay).
+
+> Note: Full evaluation takes ~8.5 hours on Kaggle P100 (same as `eval.ipynb`).
+
+---
+
+## 7. UNet+ASPP Methods (Partner's Approach)
 
 See `Adjust_SAM3_on_5weakclass_pascalvoc2012-main/README.md` for full Docker-based setup and demo instructions.
 
@@ -216,7 +234,7 @@ https://drive.google.com/drive/folders/1xPDGTGXI1LbXVc6BKm4re0X-RnsPGxB9?usp=sha
 
 ---
 
-## 7. Interactive Demo (Streamlit)
+## 8. Interactive Demo (Streamlit)
 
 `Adjust_SAM3_on_5weakclass_pascalvoc2012-main/streamlit_app/` provides a Streamlit UI supporting all inference modes.
 
